@@ -5,10 +5,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.br.CPF;
-import tech.devinhouse.labsky.enums.Fidelidade;
+import tech.devinhouse.labsky.enums.Classificacao;
+import tech.devinhouse.labsky.records.request.ConfirmacaoRequest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +18,6 @@ import java.time.LocalDate;
 @Table(name = "passageiros")
 public class Passageiro {
     @Id
-    @CPF
     @Column(unique = true)
     private String cpf;
     private String nome;
@@ -25,6 +25,21 @@ public class Passageiro {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
     @Enumerated(EnumType.STRING)
-    private Fidelidade fidelidade;
+    private Classificacao classificacao;
     private Integer milhas;
+    private String eticket;
+    private String assento;
+    @Column(name = "data_hora_confirmacao")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime dataHoraConfirmacao;
+    @Column(name = "malas_despachadas")
+    private Boolean malasDespachadas;
+
+    public Passageiro(ConfirmacaoRequest request) {
+        this.cpf = request.cpf();
+        this.assento = request.assento();
+        this.malasDespachadas = request.malasDespachadas();
+        this.eticket = request.eticket();
+        this.dataHoraConfirmacao = request.dataHoraConfirmacao();
+    }
 }

@@ -1,6 +1,6 @@
 package tech.devinhouse.labsky.enums;
 
-public enum Fidelidade {
+public enum Classificacao {
     VIP,
     OURO,
     PRATA,

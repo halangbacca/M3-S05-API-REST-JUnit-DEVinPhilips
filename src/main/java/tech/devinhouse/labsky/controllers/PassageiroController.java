@@ -1,11 +1,12 @@
 package tech.devinhouse.labsky.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import tech.devinhouse.labsky.models.Passageiro;
+import tech.devinhouse.labsky.records.request.ConfirmacaoRequest;
+import tech.devinhouse.labsky.records.response.ConfirmacaoResponse;
+import tech.devinhouse.labsky.records.response.ConsultaCPFResponse;
 import tech.devinhouse.labsky.services.PassageiroService;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class PassageiroController {
     }
 
     @GetMapping({"/passageiros/{cpf}"})
-    public Passageiro listaPassageiroPeloCpf(@PathVariable String cpf) {
+    public ConsultaCPFResponse listaPassageiroPeloCpf(@PathVariable String cpf) {
         return service.listaPassageiroPeloCpf(cpf);
     }
 
@@ -39,6 +40,11 @@ public class PassageiroController {
                 "8A", "8B", "8C", "8D", "8E", "8F",
                 "9A", "9B", "9C", "9D", "9E", "9F",
                 "10A", "10B", "10C", "10D", "10E", "10F");
+    }
+
+    @PostMapping("/passageiros/confirmacao")
+    public ConfirmacaoResponse confirmacao(@RequestBody @Validated ConfirmacaoRequest request){
+        return service.confirmacao(request);
     }
 
 }

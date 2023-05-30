@@ -6,4 +6,5 @@ import tech.devinhouse.labsky.models.Passageiro;
 
 @Repository
 public interface PassageiroRepository extends JpaRepository<Passageiro, String> {
+    boolean existsPassageiroByAssentoIgnoreCase(String assento);
 }
