@@ -21,5 +21,10 @@ public class PassageiroController {
     public List<Passageiro> listaPassageiros() {
         return service.listaPassageiros();
     }
+
+    @GetMapping({"/{cpf}"})
+    public Passageiro listaPassageiroPeloCpf(@PathVariable String cpf) {
+        return service.listaPassageiroPeloCpf(cpf);
+    }
     
 }

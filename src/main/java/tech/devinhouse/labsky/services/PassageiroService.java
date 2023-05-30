@@ -17,5 +17,9 @@ public class PassageiroService {
     public List<Passageiro> listaPassageiros() {
         return repository.findAll();
     }
-    
+
+    public Passageiro listaPassageiroPeloCpf(String cpf) {
+        return repository.findById(cpf).orElseThrow(EntityNotFoundException::new);
+    }
+
 }
