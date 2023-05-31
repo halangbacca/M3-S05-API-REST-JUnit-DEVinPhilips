@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.devinhouse.labsky.enums.Classificacao;
 import tech.devinhouse.labsky.records.request.ConfirmacaoRequest;
+import tech.devinhouse.labsky.records.response.ConsultaCPFResponse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,5 +42,31 @@ public class Passageiro {
         this.malasDespachadas = request.malasDespachadas();
         this.eticket = request.eticket();
         this.dataHoraConfirmacao = request.dataHoraConfirmacao();
+    }
+
+    public Passageiro(ConsultaCPFResponse response) {
+        this.cpf = response.cpf();
+        this.nome = response.nome();
+        this.dataNascimento = response.dataNascimento();
+        this.classificacao = response.classificacao();
+        this.milhas = response.milhas();
+    }
+
+    public Passageiro(String cpf, String nome) {
+        this.cpf = cpf;
+        this.nome = nome;
+    }
+
+    public Passageiro(String eticket, LocalDateTime dataHoraConfirmacao) {
+        this.eticket = eticket;
+        this.dataHoraConfirmacao = dataHoraConfirmacao;
+    }
+
+    public Passageiro(String cpf, String nome, LocalDate dataNascimento, Classificacao classificacao, Integer milhas) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.dataNascimento = dataNascimento;
+        this.classificacao = classificacao;
+        this.milhas = milhas;
     }
 }
