@@ -26,7 +26,7 @@ public class Passageiro {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
     @Enumerated(EnumType.STRING)
-    private Classificacao classificacao;
+    private Classificacao classificacao = Classificacao.ASSOCIADO;
     private Integer milhas;
     private String eticket;
     private String assento;

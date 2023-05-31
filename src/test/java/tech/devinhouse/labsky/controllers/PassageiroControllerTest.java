@@ -68,7 +68,7 @@ class PassageiroControllerTest {
 
     @Test
     @DisplayName("Quando há um passageiro cadastrado com o CPF informado, deve retornar o passageiro")
-    void listaPassageiro_CPF_encontrado() throws Exception {
+    void listaPassageiroPeloCPF() throws Exception {
         var passageiro = new ConsultaCPFResponse("111.111.111-11", "Phoebe Buffay", LocalDate.of(1998, 7, 21), Classificacao.VIP, 100);
         Mockito.when(service.listaPassageiroPeloCpf(Mockito.anyString())).thenReturn(passageiro);
         mockMvc.perform(get("/api/passageiros/{cpf}", "111.111.111-11")

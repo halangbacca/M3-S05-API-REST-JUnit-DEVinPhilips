@@ -8,4 +8,5 @@ public record ConfirmacaoResponse(String eticket, LocalDateTime dataHoraConfirma
     public ConfirmacaoResponse(Passageiro passageiro) {
         this(passageiro.getEticket(), passageiro.getDataHoraConfirmacao());
     }
+
 }
