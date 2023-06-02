@@ -18,16 +18,16 @@
 - Baixar e instalar o Postman
 - Baixar a collection do Postman
 - Executar a API REST através da IDE
-- Os dados iniciar serão carregados na memória do banco de dados H2
+- Os dados iniciais serão carregados na memória do banco de dados H2
 - Executar as requisições no Postman
 
 ## Banco de Dados H2
 - O H2 é um Banco de Dados em memória e a cada re-deploy da aplicação, o Banco de Dados também é reiniciado e os dados armazenados são perdidos
-- É possível acessar o seu cliente SQL nativo, em qualquer navegador, através da URL http://localhost:8080/h2-console, informando a JDBC URL exibida no console da IDE e utilizando o username sa
+- É possível acessar o seu cliente SQL nativo, em qualquer navegador, através da URL: "http://localhost:8080/h2-console", informando a "JDBC URL" exibida no console da IDE e utilizando o username "sa"
 
 ## Funcionalidades
 - Carregamento de dados iniciais
-    - Pacientes
+    - Passageiros
       - CPF (String)
       - Nome (String)
       - Data de nascimento (LocalDate)
@@ -44,14 +44,14 @@
 
 - Validações
     - Impede o check-in de passageiros em um assento já ocupado por outro passageiro
-    - Impede o check-in de passageiros menores de idade sentem nos assentos de emergência (5 e 6)
-    - Impede o check-in de passageiros que não fizeram o despache das malas nos assentos de emergência (5 e 6)
-    - Informa no body da requisição quando não há passageiro cadastrado com o CPF informado
-    - Informa no body da requisição quando o assento informado não existe na aeronave
+    - Impede o check-in de passageiros menores de idade que selecionaram assentos de emergência (5 e 6)
+    - Impede o check-in de passageiros que não fizeram o despache das malas e selecionaram assentos de emergência (5 e 6)
+    - Exibe no response da requisição quando não há passageiro cadastrado com o CPF informado
+    - Exibe no response da requisição quando o assento informado não existe na aeronave
     - Incrementa as milhas do passageiro de acordo com a sua classificação no plano de fidelidade da empresa
   
 - Testes Unitários
-  - Implementação de testes unitários nas camadas controller e service
+  - Implementação de testes unitários nas camadas Controller e Service
 
 - Exceptions
     - Tratador de erros:
