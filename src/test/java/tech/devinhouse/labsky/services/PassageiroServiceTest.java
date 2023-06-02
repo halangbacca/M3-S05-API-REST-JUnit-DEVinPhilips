@@ -222,4 +222,5 @@ class PassageiroServiceTest {
             assertEquals(passageiro.getMilhas(), milhas + 10);
         }
     }
+
 }

@@ -1,6 +1,8 @@
 package tech.devinhouse.labsky.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +80,15 @@ class PassageiroControllerTest {
     }
 
     @Test
+    @DisplayName("Quando não há passageiro cadastrado com o CPF informado, deve lançar uma exceção")
+    void listaPassageiroPeloCPF_naoEncontrado() throws Exception {
+        Mockito.doThrow(new EntityNotFoundException("Passageiro")).when(service).listaPassageiroPeloCpf(Mockito.anyString());
+        mockMvc.perform(get("/api/passageiros/{cpf}", "111.111.111-11")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound()); // 404
+    }
+
+    @Test
     @DisplayName("Quando há assentos cadastrados, deve retornar uma lista de assentos")
     void listaAssentos() throws Exception {
         mockMvc.perform(get("/api/assentos")
@@ -98,6 +109,66 @@ class PassageiroControllerTest {
                 .andExpect(status().isOk())  // 200
                 .andExpect(jsonPath("$.eticket", is(request.eticket())))
                 .andExpect(jsonPath("$.dataHoraConfirmacao", is(request.dataHoraConfirmacao().toString())));
+    }
+
+    @Test
+    @DisplayName("Quando realiza o check-in com passageiro inexistente, deve lançar exceção")
+    void checkin_invalidoCPFInexistente() throws Exception {
+        ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", false, "123456", LocalDateTime.now());
+        String requestJson = objectMapper.writeValueAsString(request);
+        Mockito.when(service.confirmacao(Mockito.any(ConfirmacaoRequest.class))).thenThrow(new EntityNotFoundException("Passageiro não encontrado!"));
+        mockMvc.perform(post("/api/passageiros/confirmacao")
+                        .content(requestJson)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound()); // 404
+    }
+
+    @Test
+    @DisplayName("Quando realiza o check-in com assento inexistente, deve lançar exceção")
+    void checkin_invalidoAssentoInexistente() throws Exception {
+        ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", false, "123456", LocalDateTime.now());
+        String requestJson = objectMapper.writeValueAsString(request);
+        Mockito.when(service.confirmacao(Mockito.any(ConfirmacaoRequest.class))).thenThrow(new EntityNotFoundException("Assento não encontrado!"));
+        mockMvc.perform(post("/api/passageiros/confirmacao")
+                        .content(requestJson)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound()); // 404
+    }
+
+    @Test
+    @DisplayName("Quando realiza o check-in com assento já ocupado por outro passageiro, deve lançar exceção")
+    void checkin_invalidoAssentoOcupado() throws Exception {
+        ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", false, "123456", LocalDateTime.now());
+        String requestJson = objectMapper.writeValueAsString(request);
+        Mockito.when(service.confirmacao(Mockito.any(ConfirmacaoRequest.class))).thenThrow(new EntityExistsException("O assento já está ocupado por outro passageiro!"));
+        mockMvc.perform(post("/api/passageiros/confirmacao")
+                        .content(requestJson)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isConflict()); // 409
+    }
+
+    @Test
+    @DisplayName("Quando passageiro menor de idade seleciona assentos de emergência, deve lançar exceção")
+    void checkin_invalidoMenorIdade() throws Exception {
+        ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "5A", false, "123456", LocalDateTime.now());
+        String requestJson = objectMapper.writeValueAsString(request);
+        Mockito.when(service.confirmacao(Mockito.any(ConfirmacaoRequest.class))).thenThrow(new RuntimeException("O passageiro é menor de idade e não pode sentar nas fileiras de emergência (5 e 6)"));
+        mockMvc.perform(post("/api/passageiros/confirmacao")
+                        .content(requestJson)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest()); // 404
+    }
+
+    @Test
+    @DisplayName("Quando passageiro seleciona assento de emergência e não despacha as malas, deve lançar exceção")
+    void checkin_invalidoDespacharMalas() throws Exception {
+        ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "5A", false, "123456", LocalDateTime.now());
+        String requestJson = objectMapper.writeValueAsString(request);
+        Mockito.when(service.confirmacao(Mockito.any(ConfirmacaoRequest.class))).thenThrow(new RuntimeException("O passageiro deve obrigatoriamente despachar suas malas nas fileiras de emergência (5 e 6)"));
+        mockMvc.perform(post("/api/passageiros/confirmacao")
+                        .content(requestJson)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest()); // 404
     }
 
     @Test
