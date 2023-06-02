@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "644f674f-01ac-4de9-aaed-4bbaeb6b3d92",
+		"name": "LABSky",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25426492"
+	},
+	"item": [
+		{
+			"name": "Lista Passageiros",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/passageiros",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"passageiros"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lista Assentos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/assentos",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"assentos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lista Passageiro pelo CPF",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/passageiros/111.111.111-11",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"passageiros",
+						"111.111.111-11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check-in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cpf\": \"222.222.222-22\",\n    \"assento\": \"6B\",\n    \"malasDespachadas\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/passageiros/confirmacao",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"passageiros",
+						"confirmacao"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
