@@ -6,10 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.devinhouse.labsky.enums.Classificacao;
-import tech.devinhouse.labsky.records.request.ConfirmacaoRequest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -27,30 +25,12 @@ public class Passageiro {
     @Enumerated(EnumType.STRING)
     private Classificacao classificacao = Classificacao.ASSOCIADO;
     private Integer milhas;
-    private String eticket;
-    private String assento;
-    @Column(name = "data_hora_confirmacao")
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime dataHoraConfirmacao;
-    @Column(name = "malas_despachadas")
-    private Boolean malasDespachadas;
-
-    public Passageiro(ConfirmacaoRequest request) {
-        this.cpf = request.cpf();
-        this.assento = request.assento();
-        this.malasDespachadas = request.malasDespachadas();
-        this.eticket = request.eticket();
-        this.dataHoraConfirmacao = request.dataHoraConfirmacao();
-    }
+    @Embedded
+    private Confirmacao confirmacao;
 
     public Passageiro(String cpf, String nome) {
         this.cpf = cpf;
         this.nome = nome;
-    }
-
-    public Passageiro(String eticket, LocalDateTime dataHoraConfirmacao) {
-        this.eticket = eticket;
-        this.dataHoraConfirmacao = dataHoraConfirmacao;
     }
 
     public Passageiro(String cpf, String nome, LocalDate dataNascimento, Classificacao classificacao, Integer milhas) {

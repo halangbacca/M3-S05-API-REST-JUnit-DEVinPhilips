@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.devinhouse.labsky.enums.Classificacao;
+import tech.devinhouse.labsky.models.Confirmacao;
 import tech.devinhouse.labsky.models.Passageiro;
 import tech.devinhouse.labsky.records.request.ConfirmacaoRequest;
 import tech.devinhouse.labsky.records.response.ConfirmacaoResponse;
@@ -34,12 +35,15 @@ public class PassageiroService {
     public ConfirmacaoResponse confirmacao(ConfirmacaoRequest request) {
         Passageiro passageiro = repository.findById(request.cpf()).orElseThrow(() -> new EntityNotFoundException("Passageiro não encontrado!"));
 
-        if (repository.existsPassageiroByAssentoIgnoreCase(request.assento())) {
+        if (passageiro.getConfirmacao() != null) {
+            throw new RuntimeException("O passageiro já realizou check-in!");
+        }
+
+        if (repository.existsPassageiroByConfirmacao_Assento(request.assento().toUpperCase())) {
             throw new EntityExistsException("O assento já está ocupado por outro passageiro!");
         }
 
-        passageiro.setAssento(request.assento());
-        passageiro.setMalasDespachadas(request.malasDespachadas());
+        passageiro.setConfirmacao(new Confirmacao(UUID.randomUUID().toString(), request.assento().toUpperCase(), LocalDateTime.now(), request.malasDespachadas()));
 
         if (passageiro.getClassificacao().equals(Classificacao.VIP)) {
             passageiro.setMilhas(passageiro.getMilhas() + 100);
@@ -64,23 +68,20 @@ public class PassageiroService {
                 "9A", "9B", "9C", "9D", "9E", "9F",
                 "10A", "10B", "10C", "10D", "10E", "10F");
 
-        if (!assentos.contains(passageiro.getAssento())) {
+        if (!assentos.contains(passageiro.getConfirmacao().getAssento().toUpperCase())) {
             throw new EntityNotFoundException("Assento não encontrado!");
         }
 
-        if ((passageiro.getAssento().contains("5") || passageiro.getAssento().contains("6")) && LocalDate.now().getYear() - passageiro.getDataNascimento().getYear() < 18) {
-            throw new RuntimeException("O passageiro é menor de idade e não pode sentar nas fileiras de emergência (5 e 6)");
+        if ((passageiro.getConfirmacao().getAssento().contains("5") || passageiro.getConfirmacao().getAssento().contains("6")) && LocalDate.now().getYear() - passageiro.getDataNascimento().getYear() < 18) {
+            throw new RuntimeException("O passageiro é menor de idade e não pode sentar nas fileiras de emergência (5 e 6)!");
         }
 
-        if ((passageiro.getAssento().contains("5") || passageiro.getAssento().contains("6")) && !request.malasDespachadas()) {
-            throw new RuntimeException("O passageiro deve obrigatoriamente despachar suas malas nas fileiras de emergência (5 e 6)");
+        if ((passageiro.getConfirmacao().getAssento().contains("5") || passageiro.getConfirmacao().getAssento().contains("6")) && !request.malasDespachadas()) {
+            throw new RuntimeException("O passageiro deve obrigatoriamente despachar suas malas nas fileiras de emergência (5 e 6)!");
         }
-
-        passageiro.setEticket(UUID.randomUUID().toString());
-        passageiro.setDataHoraConfirmacao(LocalDateTime.now());
 
         repository.save(passageiro);
-        System.out.println("Confirmação feita pelo passageiro de CPF " + passageiro.getCpf() + " com e-ticket " + passageiro.getEticket());
+        System.out.println("Confirmação feita pelo passageiro de CPF " + passageiro.getCpf() + " com e-ticket " + passageiro.getConfirmacao().getEticket());
         return new ConfirmacaoResponse(passageiro);
     }
 

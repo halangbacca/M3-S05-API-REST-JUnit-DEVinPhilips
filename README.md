@@ -8,6 +8,7 @@
 
 ## Dependências do Spring
 - Lombok
+- H2 Database
 
 ## Collection Postman
 - Os arquivos utilizados nas requisições HTTP estão na raiz do projeto, dentro do diretório postman
@@ -34,8 +35,8 @@
       - Classificação (Enum)
       - Milhas (Integer)
 
-- Cadastros
-    - Confirmação de voo (check-in)
+- Check-in
+    - Realização da confirmação de voo (check-in)
 
 - Listagens
     - Listagem de passageiro por CPF
@@ -43,6 +44,7 @@
     - Listagem de todos os assentos da aeronave
 
 - Validações
+    - Impede que o mesmo passageiro realize mais de um check-in
     - Impede o check-in de passageiros em um assento já ocupado por outro passageiro
     - Impede o check-in de passageiros menores de idade que selecionaram assentos de emergência (5 e 6)
     - Impede o check-in de passageiros que não fizeram o despache das malas e selecionaram assentos de emergência (5 e 6)

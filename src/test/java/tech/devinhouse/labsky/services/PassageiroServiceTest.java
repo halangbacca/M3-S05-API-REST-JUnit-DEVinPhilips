@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.devinhouse.labsky.enums.Classificacao;
+import tech.devinhouse.labsky.models.Confirmacao;
 import tech.devinhouse.labsky.models.Passageiro;
 import tech.devinhouse.labsky.records.request.ConfirmacaoRequest;
 import tech.devinhouse.labsky.records.response.ConsultaCPFResponse;
@@ -92,7 +93,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(true);
             assertThrows(EntityExistsException.class, () -> service.confirmacao(request));
         }
@@ -104,7 +105,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "15A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             assertThrows(EntityNotFoundException.class, () -> service.confirmacao(request));
         }
@@ -116,7 +117,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "5A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             assertThrows(RuntimeException.class, () -> service.confirmacao(request));
         }
@@ -128,8 +129,18 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "5A", false, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
+            assertThrows(RuntimeException.class, () -> service.confirmacao(request));
+        }
+
+        @Test
+        @DisplayName("Quando o passageiro já realizou check-in, deve lançar exceção")
+        void confirmacao_Duplicada() {
+            Passageiro passageiro = new Passageiro("111.111.111-11", "Halan Germano Bacca", LocalDate.of(2000, 7, 21), Classificacao.VIP, 100, new Confirmacao("123456", "1A", LocalDateTime.now(), true));
+            ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "5A", true, "123456", LocalDateTime.now());
+            Mockito.when(repository.findById(Mockito.anyString()))
+                    .thenReturn(Optional.of(passageiro));
             assertThrows(RuntimeException.class, () -> service.confirmacao(request));
         }
 
@@ -141,10 +152,11 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             var resultado = service.confirmacao(request);
             assertNotNull(resultado);
+            assertEquals(passageiro.getCpf(), request.cpf());
         }
 
         @Test
@@ -155,7 +167,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             var resultado = service.confirmacao(request);
             assertNotNull(resultado);
@@ -170,7 +182,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             var resultado = service.confirmacao(request);
             assertNotNull(resultado);
@@ -185,7 +197,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             var resultado = service.confirmacao(request);
             assertNotNull(resultado);
@@ -200,7 +212,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             var resultado = service.confirmacao(request);
             assertNotNull(resultado);
@@ -215,7 +227,7 @@ class PassageiroServiceTest {
             ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", true, "123456", LocalDateTime.now());
             Mockito.when(repository.findById(Mockito.anyString()))
                     .thenReturn(Optional.of(passageiro));
-            Mockito.when(repository.existsPassageiroByAssentoIgnoreCase(Mockito.anyString()))
+            Mockito.when(repository.existsPassageiroByConfirmacao_Assento(Mockito.anyString()))
                     .thenReturn(false);
             var resultado = service.confirmacao(request);
             assertNotNull(resultado);

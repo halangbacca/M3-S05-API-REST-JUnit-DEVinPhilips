@@ -30,6 +30,8 @@ public class Handler {
             return ResponseEntity.status(400).body("O passageiro é menor de idade e não pode sentar nas fileiras de emergência!");
         } else if (exception.getMessage().contains("malas")) {
             return ResponseEntity.status(400).body("O passageiro deve obrigatoriamente despachar suas malas nas fileiras de emergência!");
+        } else if (exception.getMessage().contains("check-in")) {
+            return ResponseEntity.status(400).body("O passageiro já realizou check-in!");
         }
         return ResponseEntity.badRequest().build();
     }

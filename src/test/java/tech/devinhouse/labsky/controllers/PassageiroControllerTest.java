@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.devinhouse.labsky.enums.Classificacao;
+import tech.devinhouse.labsky.models.Confirmacao;
 import tech.devinhouse.labsky.models.Passageiro;
 import tech.devinhouse.labsky.records.request.ConfirmacaoRequest;
 import tech.devinhouse.labsky.records.response.ConfirmacaoResponse;
@@ -102,7 +103,7 @@ class PassageiroControllerTest {
     void checkin_valido() throws Exception {
         ConfirmacaoRequest request = new ConfirmacaoRequest("111.111.111-11", "1A", false, "123456", LocalDateTime.now());
         String requestJson = objectMapper.writeValueAsString(request);
-        Mockito.when(service.confirmacao(Mockito.any(ConfirmacaoRequest.class))).thenReturn(new ConfirmacaoResponse(new Passageiro("123456", request.dataHoraConfirmacao())));
+        Mockito.when(service.confirmacao(Mockito.any(ConfirmacaoRequest.class))).thenReturn(new ConfirmacaoResponse(new Confirmacao(request.eticket(), request.assento(), request.dataHoraConfirmacao(), request.malasDespachadas())));
         mockMvc.perform(post("/api/passageiros/confirmacao")
                         .content(requestJson)
                         .contentType(APPLICATION_JSON))

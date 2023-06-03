@@ -16,4 +16,5 @@ public record ConsultaCPFResponse(
     public ConsultaCPFResponse(Passageiro passageiro) {
         this(passageiro.getCpf(), passageiro.getNome(), passageiro.getDataNascimento(), passageiro.getClassificacao(), passageiro.getMilhas());
     }
+
 }
